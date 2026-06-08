@@ -1,23 +1,31 @@
 import pygame
+import random
 
 from src.config import (
     LARGURA_TELA,
     ALTURA_TELA,
     FPS,
     TITULO_JOGO,
+    BRANCO,
+    PRETO,
     CINZA,
+    AZUL,
+    VERDE,
+    VERMELHO,
+    TAMANHO_FONTE_GRANDE,
+    TAMANHO_FONTE_PEQUENA,
     CAMINHO_RECORDE,
-    CAMINHO_SPRITES,
 )
 
 from src.funcoes import (
+    gerar_matriz_embaralhada,
+    obter_pergunta,
+    verificar_resposta,
     calcular_pontos,
-    jogador_perdeu,
-    limitar_valor,
-    verificar_colisao,
-    tomar_dano,
+    PERGUNTAS,
+    MATRIZ_OPCOES,
 )
-from src.sprites import pegar_sprite
+
 from src.dados import (
     salvar_recorde,
     carregar_recorde,
@@ -25,50 +33,33 @@ from src.dados import (
 
 
 def executar_jogo():
-    """Executa o loop principal do jogo e controla estado, colisões e pontuação."""
+    """Executa o loop principal do jogo de perguntas."""
     pygame.init()
-    
 
     tela = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA))
     pygame.display.set_caption(TITULO_JOGO)
 
     relogio = pygame.time.Clock()
+    fonte_grande = pygame.font.Font(None, TAMANHO_FONTE_GRANDE)
+    fonte_pequena = pygame.font.Font(None, TAMANHO_FONTE_PEQUENA)
+
     rodando = True
+    tela_menu = True
+    pergunta_atual = 0
+    respondida = False
 
-    # 1. Carregando as imagens recortadas do Spritesheet
-
-
-    # Jogador: usando tamanho 110x110 para capturar o quadrado perfeitamente
-    player_image = pegar_sprite(CAMINHO_SPRITES, x=110, y=120, width=190, height=190, scale=0.5)
-
-    # Gema pequena: usando tamanho 64x64
-    gem_image    = pegar_sprite(CAMINHO_SPRITES, x=900, y=690, width=200, height=200, scale=0.5)
-
-    # Morcego: usando tamanho 180x120 por causa das asas abertas
-    bat_image    = pegar_sprite(CAMINHO_SPRITES, x=905, y=1060, width=200, height=130, scale=0.5)
-    
-    # 2. Criando a estrutura de Sprites usando Dicionários
-    jogador = {
-        "imagem": player_image,
-        "rect": player_image.get_rect(topleft=(100, 100))
-    }
-
-    gema = {
-        "imagem": gem_image,
-        "rect": gem_image.get_rect(topleft=(500, 300))
-    }
-    
-    inimigo = {
-        "imagem": bat_image,
-        "rect": bat_image.get_rect(topleft=(200, 500))
-    }
-
-    velocidade = 5
     pontos = 0
-    vidas = 3
     recorde = carregar_recorde(CAMINHO_RECORDE)
 
-    # Loop principal: processa entrada, atualiza estado e renderiza a cena.
+    mensagem = ""
+    contador_mensagem = 0
+
+    matriz_opcoes = gerar_matriz_embaralhada()
+    rects_botoes = []
+
+    elemento_x = 0
+    elemento_velocidade = 5
+
     while rodando:
         relogio.tick(FPS)
 
@@ -76,67 +67,105 @@ def executar_jogo():
             if evento.type == pygame.QUIT:
                 rodando = False
 
-        teclas = pygame.key.get_pressed()
+            if tela_menu and evento.type == pygame.MOUSEBUTTONDOWN:
+                tela_menu = False
 
-        # Movimentação alterando direto os eixos X e Y do retângulo do jogador
-        if teclas[pygame.K_LEFT]:
-            jogador["rect"].x -= velocidade
-        if teclas[pygame.K_RIGHT]:
-            jogador["rect"].x += velocidade
-        if teclas[pygame.K_UP]:
-            jogador["rect"].y -= velocidade
-        if teclas[pygame.K_DOWN]:
-            jogador["rect"].y += velocidade
+            if (
+                not tela_menu
+                and evento.type == pygame.MOUSEBUTTONDOWN
+                and not respondida
+                and pergunta_atual < len(PERGUNTAS)
+            ):
+                mouse_x, mouse_y = pygame.mouse.get_pos()
 
-        # Limitando o jogador dentro das bordas da tela usando as propriedades do Rect
-        jogador["rect"].x = limitar_valor(jogador["rect"].x, 0, LARGURA_TELA - jogador["rect"].width)
-        jogador["rect"].y = limitar_valor(jogador["rect"].y, 0, ALTURA_TELA - jogador["rect"].height)
+                for i, botao in enumerate(rects_botoes):
+                    if botao.collidepoint(mouse_x, mouse_y):
+                        resposta_usuario = matriz_opcoes[pergunta_atual][i].lower()
+                        respondida = True
 
-        # Verificação de colisão com a Gema (antigo 'item')
-        if verificar_colisao(jogador["rect"], gema["rect"]):
-            pontos = calcular_pontos(pontos, 10)
+                        if verificar_resposta(
+                            pergunta_atual,
+                            resposta_usuario,
+                            matriz_opcoes[pergunta_atual],
+                        ):
+                            pontos = calcular_pontos(pontos, 1)
+                            mensagem = "CORRETO!"
+                        else:
+                            mensagem = "INCORRETO!"
 
-            # Move a gema de lugar ao coletar
-            gema["rect"].x += 80
-            gema["rect"].y += 50
+                        contador_mensagem = 120
 
-            # Se a gema sair da tela, volta para uma posição segura
-            if gema["rect"].x > LARGURA_TELA - gema["rect"].width:
-                gema["rect"].x = 50
-            if gema["rect"].y > ALTURA_TELA - gema["rect"].height:
-                gema["rect"].y = 50
+            if evento.type == pygame.MOUSEBUTTONDOWN and respondida:
+                pergunta_atual += 1
+                respondida = False
+                mensagem = ""
+                contador_mensagem = 0
 
-        # Verificação de colisão com o Inimigo
-        if verificar_colisao(jogador["rect"], inimigo["rect"]):
-            vidas = tomar_dano(vidas, 1)
+        tela.fill(BRANCO)
 
-            # Afasta o inimigo ao colidir
-            inimigo["rect"].x += 80
-            inimigo["rect"].y += 50
+        elemento_x += elemento_velocidade
+        if elemento_x > LARGURA_TELA:
+            elemento_x = -20
+        pygame.draw.circle(tela, AZUL, (elemento_x, 50), 10)
 
-            if inimigo["rect"].x > LARGURA_TELA - inimigo["rect"].width:
-                inimigo["rect"].x = 50
-            if inimigo["rect"].y > ALTURA_TELA - inimigo["rect"].height:
-                inimigo["rect"].y = 50
+        if tela_menu:
+            texto_titulo = fonte_grande.render(
+                "BEM-VINDO AO JOGO DE PERGUNTAS PYTHON!", True, PRETO
+            )
+            tela.blit(texto_titulo, (100, 250))
 
-        # Regras de fim de jogo e recorde
-        if jogador_perdeu(vidas):
-            rodando = False
+            texto_objetivo = fonte_pequena.render(
+                "SEU OBJETIVO E ACERTAR O MAXIMO DE PERGUNTAS POSSIVEIS", True, PRETO
+            )
+            tela.blit(texto_objetivo, (150, 350))
 
-        if pontos > recorde:
-            recorde = pontos
-            salvar_recorde(CAMINHO_RECORDE, recorde)
+            texto_clique = fonte_pequena.render("Clique para começar", True, AZUL)
+            tela.blit(texto_clique, (350, 450))
 
-        pygame.display.set_caption(
-            f"{TITULO_JOGO} | Pontos: {pontos} | Recorde: {recorde} | Vidas: {vidas}"
-        )
+        elif pergunta_atual < len(PERGUNTAS):
+            pergunta = obter_pergunta(pergunta_atual)
+            texto_pergunta = fonte_pequena.render(pergunta, True, PRETO)
+            tela.blit(texto_pergunta, (50, 80))
 
-        tela.fill(CINZA)
+            rects_botoes = []
+            for i, opcao in enumerate(matriz_opcoes[pergunta_atual]):
+                y = 250 + i * 80
+                rect = pygame.draw.rect(tela, CINZA, (100, y, 800, 70))
+                rects_botoes.append(rect)
 
-        # Desenhando os elementos na tela passando a imagem e o rect de cada dicionário
-        tela.blit(gema["imagem"], gema["rect"])
-        tela.blit(inimigo["imagem"], inimigo["rect"])
-        tela.blit(jogador["imagem"], jogador["rect"])
+                texto_opcao = fonte_pequena.render(opcao, True, PRETO)
+                tela.blit(texto_opcao, (120, y + 20))
+
+            texto_pontos = fonte_pequena.render(f"Pontos: {pontos}", True, PRETO)
+            tela.blit(texto_pontos, (50, 600))
+
+            if respondida and contador_mensagem > 0:
+                cor_msg = VERDE if "CORRETO" in mensagem else VERMELHO
+                texto_msg = fonte_grande.render(mensagem, True, cor_msg)
+                tela.blit(texto_msg, (300, 500))
+
+                texto_continue = fonte_pequena.render(
+                    "Clique para proxima pergunta", True, PRETO
+                )
+                tela.blit(texto_continue, (250, 570))
+
+                contador_mensagem -= 1
+
+        else:
+            texto_final = fonte_grande.render("FIM DO JOGO!", True, PRETO)
+            tela.blit(texto_final, (300, 150))
+
+            texto_resultado = fonte_grande.render(
+                f"Voce fez {pontos} pontos, PARABENS!", True, AZUL
+            )
+            tela.blit(texto_resultado, (150, 350))
+
+            if pontos > recorde:
+                recorde = pontos
+                salvar_recorde(CAMINHO_RECORDE, recorde)
+
+            texto_recorde = fonte_pequena.render(f"Recorde: {recorde}", True, PRETO)
+            tela.blit(texto_recorde, (400, 450))
 
         pygame.display.flip()
 

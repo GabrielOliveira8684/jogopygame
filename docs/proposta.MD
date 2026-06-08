@@ -10,16 +10,16 @@ Escreva aqui o nome provisório do jogo.
 
 Exemplo:
 
-> Corrida dos Obstáculos
+> Quem quer ser um engenheiro
 
 ## 2. Integrantes do grupo
 
 Liste os integrantes do grupo.
 
-- Nome 1:
-- Nome 2:
-- Nome 3:
-- Nome 4:
+- Nome 1: Fabricio Felix Gomes
+- Nome 2: Gabriel Oliveira
+- Nome 3: Italo Alves Machado
+- Nome 4: Gabriel Oliveira Gonzaga Araujo
 
 ## 3. Tipo de jogo
 
@@ -42,7 +42,7 @@ Exemplos:
 
 Tipo escolhido pelo grupo:
 
-> Escreva aqui.
+> Perguntas e respostas
 
 ## 4. Descrição geral do jogo
 
@@ -57,7 +57,7 @@ Procure responder:
 
 Descrição:
 
-> Escreva aqui.
+> Aparecerá na tela uma pergunta, e para elas, algumas opções de resposta, onde somente uma será a certa. O jogador controlará apenas a escolha, sendo esse o seu maior desafio. Ao final de tudo, caso acerte todas as perguntas, ele receberá o título de Engenheiro de Software.
 
 ## 5. Objetivo do jogador
 
@@ -75,7 +75,7 @@ Exemplos:
 
 Objetivo:
 
-> Escreva aqui.
+> Completar o quizz para se tornar um engenheiro.
 
 ## 6. Regras principais
 
@@ -91,11 +91,11 @@ Exemplo:
 
 Regras do grupo:
 
-- Regra 1:
-- Regra 2:
-- Regra 3:
-- Regra 4:
-- Regra 5:
+- Regra 1: Limite de tempo de 30 segundos
+- Regra 2: Se acertar, vai para a próxima pergunta
+- Regra 3: Em caso de erro, perde tudo
+- Regra 4: Proibido uso de fontes externas
+- Regra 5: O jogador pode parar quando quiser, mas receberá o prêmio de acordo com seu progresso
 
 ## 7. Condição de vitória
 
@@ -111,7 +111,7 @@ Exemplos:
 
 Condição de vitória:
 
-> Escreva aqui.
+> Responder tudo corretamente.
 
 ## 8. Condição de derrota ou encerramento
 
@@ -127,7 +127,7 @@ Exemplos:
 
 Condição de derrota ou encerramento:
 
-> Escreva aqui.
+> O jogo irá finalizar quando o jogador errar uma resposta ou quando ele optar por parar o questionário.
 
 ## 9. Elementos previstos no jogo
 
@@ -141,7 +141,7 @@ Exemplo:
 
 Descrição:
 
-> Escreva aqui.
+> Um jogador, perguntas, um cronômetro a cada rodada, categorias e temas
 
 ## Obstáculos, inimigos ou desafios
 
@@ -151,7 +151,7 @@ Exemplo:
 
 Descrição:
 
-> Escreva aqui.
+> Perguntas com diferentes temas, as quais tambés irão dificultando com o decorrer do tempo
 
 ## Itens, alvos ou objetos de interação
 
@@ -161,7 +161,7 @@ Exemplo:
 
 Descrição:
 
-> Escreva aqui.
+> Poderá receber 3 dicas durante todo o questionário, sendo essas dicas disponibilizadas apenas pela máquina
 
 ## Pontuação, vidas, tempo ou progresso
 
@@ -171,7 +171,7 @@ Exemplo:
 
 Descrição:
 
-> Escreva aqui.
+> Não terá vida extra, apenas uma chance
 
 ## 10. Controles previstos
 
@@ -188,9 +188,9 @@ Exemplo:
 
 Controles do grupo:
 
-- Tecla/comando:
-- Tecla/comando:
-- Tecla/comando:
+- Tecla/comando: Enter: Confirmar resposta
+- Tecla/comando: Esc: Finalizar quizz
+- Tecla/comando: Alt + Space : Ajuda
 
 ## 11. Organização inicial do código
 
@@ -222,7 +222,7 @@ Exemplo:
 
 Recursos previstos:
 
-> Escreva aqui.
+> Utilizaremos algumas imagens apenas para a estética de cada pergunta, além de alguns sons para acertos e erros das perguntas.
 
 Caso não pretenda utilizar recursos externos, escreva:
 
@@ -245,9 +245,9 @@ Exemplos:
 
 Dificuldades previstas:
 
-- Dificuldade 1:
-- Dificuldade 2:
-- Dificuldade 3:
+- Dificuldade 1: Uso do GitHub
+- Dificuldade 2: Ordenar as perguntas por temas e níveis de dificuldade
+- Dificuldade 3: Organizar o código e sua exibição na tela
 
 ## 14. Escopo mínimo para a entrega final
 
@@ -261,7 +261,7 @@ Exemplo:
 
 Escopo mínimo:
 
-> Escreva aqui.
+> Poucas perguntas que funcionem corretamente.
 
 ## 15. Possíveis melhorias, caso haja tempo
 
@@ -281,6 +281,6 @@ Exemplos:
 
 Melhorias possíveis:
 
-- Melhoria 1:
-- Melhoria 2:
-- Melhoria 3:
+- Melhoria 1: Melhorar a estética
+- Melhoria 2: Otimizar o código
+- Melhoria 3: Criar um ranking de jogadores
