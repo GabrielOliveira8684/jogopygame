@@ -47,6 +47,7 @@ def executar_jogo():
     tela_menu = True
     pergunta_atual = 0
     respondida = False
+    game_over = False
 
     pontos = 0
     recorde = carregar_recorde(CAMINHO_RECORDE)
@@ -92,6 +93,7 @@ def executar_jogo():
                             mensagem = "CORRETO!"
                         else:
                             mensagem = "INCORRETO!"
+                            game_over =  True
 
                         contador_mensagem = 120
 
