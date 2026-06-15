@@ -5,7 +5,7 @@ def pegar_sprite(local_arquivo, x, y, width, height, scale=1):
     
     # 1. Carrega o BMP e usa .convert() (sem alpha) para otimizar a velocidade
     sheet = pygame.image.load(local_arquivo).convert()
-
+ 
     # 2. Cria uma superfície padrão para o recorte (não precisa de SRCALPHA aqui)
     image = pygame.Surface((width, height))
     

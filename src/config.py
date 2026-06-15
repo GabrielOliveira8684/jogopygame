@@ -17,3 +17,5 @@ CAMINHO_SPRITES = "assets/imagens/spritesheet.bmp"
 
 TAMANHO_FONTE_GRANDE = 36
 TAMANHO_FONTE_PEQUENA = 28
+
+CAMINHO_RANKING = "data/ranking.txt"
