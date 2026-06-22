@@ -1,12 +1,26 @@
+import os
+
+
+def _garantir_pasta(caminho_arquivo):
+    """Garante que a pasta do arquivo exista antes de salvar."""
+    pasta = os.path.dirname(caminho_arquivo)
+    if pasta:
+        os.makedirs(pasta, exist_ok=True)
+
+
 def salvar_recorde(caminho_arquivo, pontuacao):
     """Salva a pontuação recorde em arquivo texto."""
+    _garantir_pasta(caminho_arquivo)
     arquivo = open(caminho_arquivo, "w", encoding="utf-8")
     arquivo.write(str(pontuacao))
     arquivo.close()
 
 
 def carregar_recorde(caminho_arquivo):
-    """Carrega o recorde salvo; retorna 0 se não existir valor válido."""
+    """Carrega o recorde salvo; retorna 0 se o arquivo não existir ou estiver vazio."""
+    if not os.path.exists(caminho_arquivo):
+        return 0
+
     arquivo = open(caminho_arquivo, "r", encoding="utf-8")
     conteudo = arquivo.read().strip()
     arquivo.close()
@@ -19,13 +33,21 @@ def carregar_recorde(caminho_arquivo):
 
 def salvar_ranking(caminho_arquivo, nome, pontuacao):
     """Adiciona uma entrada de nome e pontuação no ranking."""
+    _garantir_pasta(caminho_arquivo)
     arquivo = open(caminho_arquivo, "a", encoding="utf-8")
     arquivo.write(nome + ";" + str(pontuacao) + "\n")
     arquivo.close()
 
 
 def carregar_ranking(caminho_arquivo):
-    """Carrega o ranking e retorna lista de listas [nome, pontuacao] ordenada."""
+    """Carrega o ranking e retorna lista de listas [nome, pontuacao] ordenada.
+
+    Retorna lista vazia se o arquivo ainda não existir (ex.: primeira execução
+    do jogo em uma máquina nova, antes de qualquer partida ser salva).
+    """
+    if not os.path.exists(caminho_arquivo):
+        return []
+
     arquivo = open(caminho_arquivo, "r", encoding="utf-8")
     linhas = arquivo.readlines()
     arquivo.close()
